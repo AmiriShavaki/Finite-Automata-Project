@@ -61,7 +61,7 @@ void DFA::showSchematicDFA(NFA& nfa) {
     nonFinal = window.loadImage("nonFinal.png");
     finalImg = window.loadImage("final.png");
     horizontalArrow = window.loadImage("horizontalArrow.png");
-    window.blitText("Press space key or hit the close button to close the window", 400, 675, 100, 100);
+    window.blitText("Press space key to close the window", 400, 675, 100, 100);
     blitStates();
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     blitTrans(window);

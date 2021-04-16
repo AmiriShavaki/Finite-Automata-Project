@@ -129,10 +129,8 @@ void NFA::blitTrans(Graphics& window) {
 }
 
 void NFA::blitStates() {
-    cout << "heyyyyy1\n";
     for (int x = HORIZONTALLINEWIDTH, i = 0; i < states.size(); x += (SCREENWIDTH - HORIZONTALLINEWIDTH) / states.size(),
      i++) {
-         cout << i << endl;
         if (isFinalState(states[i])) {
             window.blit(finalImg, x, STATEY, STATEWIDTH, STATEHEIGHT);
         } else {
@@ -140,7 +138,6 @@ void NFA::blitStates() {
         }
         window.blitText(states[i], x + STATEWIDTH / 3, STATEY + STATEHEIGHT / 3, 100, 100);
     }
-    cout << "heyyyyyy2\n";
 }
 
 void NFA::showSchematicNFA() {
@@ -148,10 +145,8 @@ void NFA::showSchematicNFA() {
     nonFinal = window.loadImage("nonFinal.png");
     finalImg = window.loadImage("final.png");
     horizontalArrow = window.loadImage("horizontalArrow.png");
-    window.blitText("Press space key or hit the close button to close the window", 400, 675, 100, 100);
-    cout << "beforeblitState\n";
+    window.blitText("Press space key to close the window", 400, 675, 100, 100);
     blitStates();
-    cout << "after\n";
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     blitTrans(window);
     window.blit(horizontalArrow, 0, SCREENHEIGHT / 2 - HORIZONTALLINEHEIGHT / 2, HORIZONTALLINEWIDTH, HORIZONTALLINEHEIGHT);
