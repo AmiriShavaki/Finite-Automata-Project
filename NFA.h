@@ -124,11 +124,11 @@ const string NFA::findRegExp() {
                 //Both of below expressions are equivalent to tbl[][] += tbl[][].(tbl[][])*.tbl[][]
                 tbl[i][j].setVal(RegExp::Union(tbl[i][j].getVal(), RegExp::Concat(tbl[i][k].getVal(), RegExp::Concat(RegExp::Star(tbl[k][k].getVal()), tbl[k][j].getVal()))));
                 tbl[j][i].setVal(RegExp::Union(tbl[j][i].getVal(), RegExp::Concat(tbl[j][k].getVal(), RegExp::Concat(RegExp::Star(tbl[k][k].getVal()), tbl[k][i].getVal()))));
-                cout << "State to remove: " << states[k] << endl;
-                cout << states[i] << " to " << states[i] << " " << tbl[i][i].getVal() << endl;
-                cout << states[j] << " to " << states[j] << " " << tbl[j][j].getVal() << endl;
-                cout << states[i] << " to " << states[j] << " " << tbl[i][j].getVal() << endl;
-                cout << states[j] << " to " << states[i] << " " << tbl[j][i].getVal() << endl << endl;
+                //cout << "State to remove: " << states[k] << endl;
+                //cout << states[i] << " to " << states[i] << " " << tbl[i][i].getVal() << endl;
+                //cout << states[j] << " to " << states[j] << " " << tbl[j][j].getVal() << endl;
+                //cout << states[i] << " to " << states[j] << " " << tbl[i][j].getVal() << endl;
+                //cout << states[j] << " to " << states[i] << " " << tbl[j][i].getVal() << endl << endl;
             }
         }
     }
