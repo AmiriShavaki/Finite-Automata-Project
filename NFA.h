@@ -58,7 +58,89 @@ private:
     void blitTrans(Graphics& window);
     const int getTransInd(string s);
     void drawTrans(int st, int ed, int lvl, Graphics& window, string s);
+    const int getStateInd(string s);
 };
+
+const int NFA::getStateInd(string s) {
+    for (int i = 0; i < states.size(); i++) {
+        if (states[i] == s) {
+            return i;
+        }
+    }
+    cout << "This is a bug in getStateInd functionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n";
+}
+
+const string NFA::findRegExp() {
+    const string EMPTY = "@";
+    const string LAMBDA = "%";
+    const string NEWFINALSTATE = "newFinalState";
+    vector < vector < RegExp > > tbl; tbl.resize(states.size() + 1); // tbl[i][j]: RegExp for path from i to j
+    for (int i = 0; i < states.size() + 1; i++) {
+        tbl[i].resize(states.size() + 1);
+    }
+    for (int i = 0; i < states.size() + 1; i++) {
+        tbl[i][i].setVal(LAMBDA); //Every single state has a lambda transition to itself
+    }
+    map < string, vector < pair < string, string > > > newTrans = trans;
+    states.push_back(NEWFINALSTATE);
+    int n = states.size();
+    for (int i = 0; i < finalStates.size(); i++) { //Add new finals ignore old finals
+        string cur = finalStates[i];
+        if (newTrans.find(cur) == newTrans.end()) {
+            vector < pair < string, string > > existing;
+            newTrans[cur] = existing;
+        }
+        newTrans[cur].push_back(make_pair(NEWFINALSTATE, "")); //LAMBDA transition to new added final state
+    }
+    map < string, vector < pair < string, string > > >::iterator it;
+    for (it = newTrans.begin(); it != newTrans.end(); it++) { //Remove multi edges
+        string src = it -> first;
+        for (int i = 0; i < it -> second.size(); i++) {
+            string dest = it -> second[i].first;
+            string letter = it -> second[i].second;
+            if (letter.empty()) {
+                letter = LAMBDA;
+            }
+            tbl[getStateInd(src)][getStateInd(dest)].setVal(RegExp::Union(tbl[getStateInd(src)][getStateInd(dest)].getVal(), letter));
+            //cout << "Remove multi edges " << src << " " << dest << " " << tbl[getStateInd(src)][getStateInd(dest)].getVal() << endl;
+        }
+    }
+    for (int k = 1; k < n - 1; k++) { //Init state and final state remain, we remove other states
+        for (int i = 0; i < n; i++) {
+            if (i == k || (i < k && i != 0)) {
+                continue;
+            }
+            //Below expressions are equivalent to tbl[][] += tbl[][].(tbl[][])*.tbl[][]
+            tbl[i][i].setVal(RegExp::Union(tbl[i][i].getVal(), RegExp::Concat(tbl[i][k].getVal(), RegExp::Concat(RegExp::Star(tbl[k][k].getVal()), tbl[k][i].getVal()))));
+        }
+        for (int i = 0; i < n; i++) {
+            if (i == k || (i < k && i != 0)) {
+                continue;
+            }
+            for (int j = i + 1; j < n; j++) {
+                if (j == k || (j < k && j != 0)) {
+                    continue;
+                }
+                //Both of below expressions are equivalent to tbl[][] += tbl[][].(tbl[][])*.tbl[][]
+                tbl[i][j].setVal(RegExp::Union(tbl[i][j].getVal(), RegExp::Concat(tbl[i][k].getVal(), RegExp::Concat(RegExp::Star(tbl[k][k].getVal()), tbl[k][j].getVal()))));
+                tbl[j][i].setVal(RegExp::Union(tbl[j][i].getVal(), RegExp::Concat(tbl[j][k].getVal(), RegExp::Concat(RegExp::Star(tbl[k][k].getVal()), tbl[k][i].getVal()))));
+                cout << "State to remove: " << states[k] << endl;
+                cout << states[i] << " to " << states[i] << " " << tbl[i][i].getVal() << endl;
+                cout << states[j] << " to " << states[j] << " " << tbl[j][j].getVal() << endl;
+                cout << states[i] << " to " << states[j] << " " << tbl[i][j].getVal() << endl;
+                cout << states[j] << " to " << states[i] << " " << tbl[j][i].getVal() << endl << endl;
+            }
+        }
+    }
+    states.erase(states.begin() + n - 1); //It was new final state so we don't want that anymore
+    //Below expression is equivalent to (tbl[0][0])*.tbl[0][n-1].(tbl[n-1][0].(tbl[0][0])*.tbl[0][n-1] + tbl[n-1][n-1])*
+    /*cout << "tbl[0][0]:" << tbl[0][0].getVal() << endl;
+    cout << "tbl[0][n - 1]:" << tbl[0][n - 1].getVal() << endl;
+    cout << "Debug: " << RegExp::Concat(RegExp::Star(tbl[0][0].getVal()), tbl[0][n - 1].getVal()) << endl;
+    cout << "Debug: " << RegExp::Concat(tbl[n - 1][0].getVal(), RegExp::Concat(RegExp::Star(tbl[0][0].getVal()), tbl[0][n - 1].getVal())) << endl;
+    cout << "Debug: " << tbl[n - 1][n - 1].getVal() << endl;*/
+    return RegExp::Concat(RegExp::Concat(RegExp::Star(tbl[0][0].getVal()), tbl[0][n - 1].getVal()), RegExp::Star(RegExp::Union(RegExp::Concat(tbl[n - 1][0].getVal(), RegExp::Concat(RegExp::Star(tbl[0][0].getVal()), tbl[0][n - 1].getVal())), tbl[n - 1][n - 1].getVal())));
+}
 
 void NFA::drawTrans(int st, int ed, int lvl, Graphics& window, string s) {
     int LVLCNST = 20;
@@ -243,18 +325,6 @@ const bool NFA::unorderedCheckStates(const string s, vector < string > DFAStates
         found |= isEqual;
     }
     return found;
-}
-
-const string NFA::findRegExp() {
-    vector < RegExp > equations;
-    for (map < string, vector < pair < string, string > > >::iterator it = trans.begin(); it != trans.end(); it++) {
-        string dep = it -> first;
-        for (int i = 0; i < it -> second.size(); i++) {
-            string dest = it -> second[i].first;
-            string letter = it -> second[i].second;
-            //equations[dep].construct(dest, letter);
-        }
-    }
 }
 
 const bool NFA::isThereFinalState(const string s) {

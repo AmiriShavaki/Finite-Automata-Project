@@ -752,16 +752,16 @@
 	"begin_code.h"
 	"close_code.h"
 
-1618586728 source:c:\users\amiri\documents\midterm4\theory of languages and automata\projects\first\finite-automata-project\finite automata.cpp
+1618682663 source:c:\users\amiri\documents\midterm4\theory of languages and automata\projects\first\finite-automata-project\finite automata.cpp
 	"Main.h"
 	"NFA.h"
 	"DFA.h"
 
-1617364126 c:\users\amiri\documents\midterm4\theory of languages and automata\projects\first\finite-automata-project\main.h
+1618675714 c:\users\amiri\documents\midterm4\theory of languages and automata\projects\first\finite-automata-project\main.h
 	<iostream>
 	<string>
 
-1618587812 c:\users\amiri\documents\midterm4\theory of languages and automata\projects\first\finite-automata-project\nfa.h
+1618693389 c:\users\amiri\documents\midterm4\theory of languages and automata\projects\first\finite-automata-project\nfa.h
 	<vector>
 	<map>
 	<utility>
@@ -771,8 +771,7 @@
 	"Graphics.h"
 	<cstdio>
 
-1617380067 c:\users\amiri\documents\midterm4\theory of languages and automata\projects\first\finite-automata-project\regexp.h
-	<map>
+1618693283 c:\users\amiri\documents\midterm4\theory of languages and automata\projects\first\finite-automata-project\regexp.h
 	<string>
 
 1618478762 c:\users\amiri\documents\midterm4\theory of languages and automata\projects\first\finite-automata-project\graphics.h

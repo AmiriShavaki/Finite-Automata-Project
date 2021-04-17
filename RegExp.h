@@ -1,33 +1,55 @@
 #ifndef REGEXP_H
 #define REGEXP_H
 
-#include <map>
 #include <string>
 
-const string NOCOEF = "NOCOEF";
-const string LANDA = "LANDA";
+const string EMPTY = "@";
+const string LAMBDA = "%";
 
 class RegExp {
 public:
-    void construct(string q, string letter);
+    inline static string Star(string x);
+    inline static string Concat(string x, string y);
+    inline static string Union(string x, string y);
+    void setVal(string val) { this -> val = val; }
+    string getVal() { return val; }
+    RegExp() { val = EMPTY; }
 private:
-    map < string, string > equation; //q_i -> coefficient of q_i
-    const bool isArdenAppliable();
+    string val;
 };
 
-const bool RegExp::isArdenAppliable() {
-
+inline string RegExp::Union(string x, string y) {
+    if (x == EMPTY) {
+        return y;
+    }
+    if (y == EMPTY) {
+        return x;
+    }
+    if (x == y) {
+        return x;
+    }
+    string ans = "("; ans += x; ans += '+'; ans += y; ans += ')'; return ans;
+    //x += '+'; x += y; return x; old buggy method
 }
 
-void RegExp::construct(string q, string letter) {
-    if (letter.empty()) {
-        letter = LANDA;
+inline string RegExp::Concat(string x, string y) {
+    if (x == EMPTY || y == EMPTY) {
+        return EMPTY;
     }
-    if (equation.find(q) == equation.end()) {
-        equation[q] = letter;
-    } else {
-        equation[q] += '+'; equation[q] += letter; //union
+    if (x == LAMBDA) {
+        return y;
     }
+    if (y == LAMBDA) {
+        return x;
+    }
+    x += y; return x;
+}
+
+inline string RegExp::Star(string x) {
+    if (x == EMPTY || x == LAMBDA) {
+        return x;
+    }
+    string ans = "("; ans += x; ans += ")*"; return ans;
 }
 
 #endif // REGEXP_H

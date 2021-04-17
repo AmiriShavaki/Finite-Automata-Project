@@ -26,6 +26,11 @@ int main(int argc, char* args[]) {
                 }
                 break;
 
+                case '3': { //findRegExp
+                    cout << "Generated Regular expression: (State Removal method)\n" << nfa.findRegExp() << endl;
+                }
+                break;
+
                 case '4': { //showSchematicNFA
                     nfa.showSchematicNFA();
                 }
